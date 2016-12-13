@@ -1,6 +1,7 @@
 #narcotics
 rm(list=ls())
-repository = "C:/Users/reubenbauer/Documents/GitHub/ferguson_effect/"
+#repository = "C:/Users/reubenbauer/Box Sync/cpd_stops/data/Crimes_-_2001_to_present.csv"
+repository = "C:/Users/reuben_bauer/Box Sync/Box Sync/cpd_stops/data/Crimes_-_2001_to_present.csv"
 data = fread(paste0(repository, "data/Crimes_-_2001_to_present.csv"), header = TRUE, stringsAsFactors = FALSE)
 names(data)[names(data) == "Primary Type"]<-"crime_type"
 narcotics = filter(data, crime_type == "NARCOTICS")
