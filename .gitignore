@@ -49,4 +49,7 @@ Temporary Items
 *.pdf
 *.png
 *.csv 
+*.RData
+*.Rhistory
+*.Rproj.user
 
