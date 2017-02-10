@@ -11,7 +11,7 @@
 # 
 #	1. Clear workspace
 #	2. Set repository
-# 	3. Load libaries
+# 3. Load libaries
 #	4. Source functions
 #	5. Run project
 #
@@ -19,13 +19,13 @@
 
 #---------------------------- Section 1: Preliminaries -------------------------
 
-#-------- clear workspave ---
+#-------- clear workspace ---
 rm(list = ls())
 gc()
 
 #-------- set repository ----
-#repository <- "C:/Users/reubenbauer/Documents/Github/cpd_stops/"
-repository <- "C:/Users/reuben_bauer/Documents/Github/cpd_stops/"
+repository <- "C:/Users/reubenbauer/Documents/Github/cpd_stops/"
+#repository <- "C:/Users/reuben_bauer/Documents/Github/cpd_stops/"
 setwd(repository)
 
 #-------- load libaries -----
@@ -36,6 +36,7 @@ library(data.table)
 library(doBy)
 library(zoo)
 library(plyr)
+library(grid)
 
 #-------- source functions --
 source("func.R")
@@ -46,3 +47,4 @@ source("clean.R")
 source("graph.R")
 
 print("KLAAR")
+	
