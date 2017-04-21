@@ -90,17 +90,3 @@ dev.off()
 # + geom_vline(xintercept = as.yearqtr("2016-01"), colour = "red")
 # geom_text(aes(x=200, label="\nthe strong cars", y=20), colour="blue", angle=90, text=element_text(size=11)) +
 
-library(doBy)
-
-homicides <- filter(crime, crime_type == "HOMICIDE")
-homicides$Date <- as.Date(homicides$Date, "%m/%d/%Y %H:%M:%S")
-homicides$Month <- as.yearmon(homicides$Date)
-homicides <- filter(homicides, Month != "Aug 2016")
-homicides <- count(homicides, c("crime_type", "Month"))
-homicides$quarter <- yearqtr(homicides$Month)
-
-temp = summaryBy(freq ~ quarter, data=homicides, FUN = sum)
-
-temp = group_by(by_quarter, quarter)
-temp1 = summarise(by_quarter,
-                 a = sum(freq))
