@@ -30,6 +30,16 @@
 
 #---------------------------- Section 2: Clean Data ----------------------------
 
+#-------- clean stops -------
+cc10 <- select(cc10, -V29)
+names(cc10) <- names(cc12)
+names(cc11) <- names(cc12)
+names(cc14) <- names(cc12)
+names(cc15) <- names(cc12)
+cc <- do.call("rbind", list(cc10, cc11, cc13, cc14, cc14)) # manually deal with two weird observations in cc12
+# rm(cc12, cc13, cc14, cc15)
+cc$CONTACTDATE <- as.Date(cc$CONTACTDATE, "%d-%b-%y")
+
 #-------- clean narcotics ---
 names(crime)[names(crime) == "Primary Type"]<-"crime_type"
 narcotics <- filter(crime, crime_type == "NARCOTICS")
@@ -112,7 +122,7 @@ narc_sub_count_qrtly <- ddply(narc_sub_count,
 narc_sub_count_qrtly <- filter(narc_sub_count_qrtly, quarter != "2016 Q3")
 
 # ------- gen stops count monthly -
-stops <- reshape(stops, varying = c("X2003", "X2004","X2005","X2006","X2007","X2008","X2009","X2010","X2011","X2012","X2013","X2014","X2015","X2016"), v.names = "n_stops", times = c("2003", "2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016"), timevar = "year",  direction = "long")
+stops <- reshape(stops, varying = c("2003", "2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016"), v.names = "n_stops", times = c("2003", "2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016"), timevar = "year",  direction = "long")
 stops <- filter(stops, Month != "Total")
 stops$year_mon = paste0(stops$year, "-", stops$id)
 stops$year_mon = as.yearmon(stops$year_mon)
