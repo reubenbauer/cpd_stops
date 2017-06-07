@@ -31,4 +31,3 @@ cc12  <- fread(paste0(data_repository, "2012CONTACTCARDS.csv"),               he
 cc13  <- fread(paste0(data_repository, "2013CONTACTCARDS.csv"),               header = TRUE, stringsAsFactors = FALSE)
 cc14  <- fread(paste0(data_repository, "ContactCardData2014.csv"),            header = TRUE, stringsAsFactors = FALSE)
 cc15  <- fread(paste0(data_repository, "ContactCardData2015.csv"),            header = TRUE, stringsAsFactors = FALSE)
-cc15  <- fread(paste0(data_repository, "ContactCardData2015.csv"),            header = TRUE, stringsAsFactors = FALSE)

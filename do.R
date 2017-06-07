@@ -24,8 +24,8 @@ rm(list = ls())
 gc()
 
 #-------- set repository ----
-repository <- "C:/Users/reubenbauer/Documents/Github/cpd_stops/"
-#repository <- "C:/Users/reuben_bauer/Documents/Github/cpd_stops/"
+#repository <- "C:/Users/reubenbauer/Documents/Github/cpd_stops/"
+repository <- "C:/Users/reuben_bauer/Documents/Github/cpd_stops/"
 setwd(repository)
 
 #-------- load libaries -----
@@ -33,7 +33,7 @@ library(reshape2)
 library(ggplot2)
 library(dplyr)
 library(data.table)
-library(doBy)
+#library(doBy)
 library(zoo)
 library(plyr)
 library(grid)
