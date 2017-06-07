@@ -52,4 +52,8 @@ Temporary Items
 *.RData
 *.Rhistory
 *.Rproj.user
-
+*.aux
+*.lof
+*.log
+*.lot
+*.gz
