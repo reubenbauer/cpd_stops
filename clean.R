@@ -27,6 +27,7 @@
 #---------------------------- Section 1: Preliminaries -------------------------
 
 #---------------------------- Section 2: Clean CC ------------------------------
+
 #-------- append cc ---------
 cc10 <- select(cc10, -V29)
 names(cc10) <- names(cc12)
@@ -40,6 +41,17 @@ rm(cc10, cc11, cc12, cc13, cc14, cc15)
 cc$Month <- as.yearmon(cc$CONTACTDATE, "%d-%b-%y")
 cc <- select(cc, CONTACTTYPE, DISTRICT, Month)
 
+ISR <- filter(ISR, !(CONTACT_CARD_ID == "REDACTED"))
+ISR <- select(ISR, CONTACT_DATE, DISTRICT, CONTACT_TYPE_CD)
+names(ISR)[names(ISR) == "CONTACT_DATE"]<- "CONTACTDATE"
+names(ISR)[names(ISR) == "CONTACT_TYPE_CD"]<- "CONTACTTYPE"
+ISR$Month <- as.yearmon(ISR$CONTACTDATE, "%m/%d/%Y")
+ISR <- select(ISR, CONTACTTYPE, DISTRICT, Month)
+cc <- rbind(cc, ISR)
+cc <- filter(cc, cc$Month > 2010)
+
+rm(ISR)
+
 #-------- gen cc by month and quarter -
 # gen cc count monthly
 cc_count_monthly <- count(cc, c("Month"))
@@ -48,7 +60,6 @@ cc_count_monthly$Type <- "CC"
 # gen cc count quarterly - 
 cc_count_monthly$quarter   <- as.yearqtr(cc_count_monthly$Month, format = "%Y-%m-%d")
 cc_count_qrtly <- ddply(cc_count_monthly, .(Type, quarter), summarize, Sum=sum(freq))
-cc_count_qrtly <- filter(cc_count_qrtly, quarter != "2016 Q3" & !is.na(quarter))
 
 # gen cc count monthly by district
 cc_count_monthly_dist <- count(cc, c("Month", "DISTRICT"))
@@ -66,12 +77,12 @@ names(stops)[names(stops) == "year_mon"]<-"Month"
 #-------- gen stops by month and quarter -
 # gen stops count monthly -
 stops_monthly <- stops
+stops_monthly <- filter(stops_monthly, stops_monthly$Month > 2010)
 rm(stops)
 
 # gen stops count quarterly -
 stops_monthly$quarter <- as.yearqtr(stops_monthly$Month, format = "%Y-%m-%d")
-stops_qrly <- ddply(stops_monthly,  .(quarter), summarize, Sum=sum(n_stops))
-stops_qrtly <- filter(stops_qrly, quarter != "2016 Q3")
+stops_qrtly <- ddply(stops_monthly,  .(quarter), summarize, Sum=sum(n_stops))
 
 #---------------------------- Section 4: Clean Narcotics -----------------------
 #-------- clean narcotics ---
@@ -79,7 +90,7 @@ names(crime)[names(crime) == "Primary Type"]<-"crime_type"
 narcotics <- filter(crime, crime_type == "NARCOTICS")
 narcotics$Date <- as.Date(narcotics$Date, "%m/%d/%Y %H:%M:%S")
 narcotics$Month <- as.yearmon(narcotics$Date)
-narcotics <- filter(narcotics, Month != "Aug 2016")
+narcotics <- filter(narcotics, narcotics$Month > 2010)
 
 #combine small drug categories
 narcotics$Description[narcotics$Description == "ATTEMPT POSSESSION CANNABIS" |
@@ -145,7 +156,6 @@ narcotics_count_monthly <- count(narcotics, c("crime_type", "Month"))
 # gen narcotics count quarterly - 
 narcotics_count_monthly$quarter   <- as.yearqtr(narcotics_count_monthly$Month, format = "%Y-%m-%d")
 narcotics_count_qrtly <- ddply(narcotics_count_monthly, .(crime_type, quarter), summarize, Sum=sum(freq))
-narcotics_count_qrtly <- filter(narcotics_count_qrtly, quarter != "2016 Q3")
 
 # gen narcotics sub count monthly -
 narc_sub_count_monthly <- count(narcotics, c("crime_type", "Description", "Month"))
@@ -153,7 +163,7 @@ narc_sub_count_monthly <- count(narcotics, c("crime_type", "Description", "Month
 # gen narcotics sub count quarterly -
 narc_sub_count_monthly$quarter <- as.yearqtr(narc_sub_count_monthly$Month, format = "%Y-%m-%d")
 narc_sub_count_qrtly <- ddply(narc_sub_count_monthly, .(crime_type, Description, quarter), summarize, Sum=sum(freq))
-narc_sub_count_qrtly <- filter(narc_sub_count_qrtly, quarter != "2016 Q3")
 
 # gen narcotics count monthly district
 narcotics_count_monthly_dist <- count(narcotics, c("Month", "District"))
+

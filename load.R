@@ -31,3 +31,5 @@ cc12  <- fread(paste0(data_repository, "2012CONTACTCARDS.csv"),               he
 cc13  <- fread(paste0(data_repository, "2013CONTACTCARDS.csv"),               header = TRUE, stringsAsFactors = FALSE)
 cc14  <- fread(paste0(data_repository, "ContactCardData2014.csv"),            header = TRUE, stringsAsFactors = FALSE)
 cc15  <- fread(paste0(data_repository, "ContactCardData2015.csv"),            header = TRUE, stringsAsFactors = FALSE)
+ISR   <- fread(paste0(data_repository, "2016-01 thru 2017-02 ISR -JUV Redacted.csv"), header = TRUE, stringsAsFactors = FALSE)
+
