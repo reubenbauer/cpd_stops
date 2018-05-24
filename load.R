@@ -23,13 +23,13 @@
 data_repository <- "C:/Users/reuben_bauer/Box Sync/personal/cpd_stops/data/"
 
 #---------------------------- Section 2: Load Data -----------------------------
-crime <- fread(paste0(data_repository, "Crimes_-_2001_to_present.csv"),       header = TRUE, stringsAsFactors = FALSE)
-stops <- fread(paste0(data_repository, "FOIA PO55346 Response.csv"),          header = TRUE, stringsAsFactors = FALSE)
-cc10  <- fread(paste0(data_repository, "2010CONTACTCARDS.csv"),               header = TRUE, stringsAsFactors = FALSE)
-cc11  <- fread(paste0(data_repository, "2011CONTACTCARDS.csv"),               header = TRUE, stringsAsFactors = FALSE)
-cc12  <- fread(paste0(data_repository, "2012CONTACTCARDS.csv"),               header = TRUE, stringsAsFactors = FALSE)
-cc13  <- fread(paste0(data_repository, "2013CONTACTCARDS.csv"),               header = TRUE, stringsAsFactors = FALSE)
-cc14  <- fread(paste0(data_repository, "ContactCardData2014.csv"),            header = TRUE, stringsAsFactors = FALSE)
-cc15  <- fread(paste0(data_repository, "ContactCardData2015.csv"),            header = TRUE, stringsAsFactors = FALSE)
+crime <- fread(paste0(data_repository, "Crimes_-_2001_to_present.csv"),               header = TRUE, stringsAsFactors = FALSE)
+stops <- fread(paste0(data_repository, "FOIA PO55346 Response.csv"),                  header = TRUE, stringsAsFactors = FALSE)
+cc10  <- fread(paste0(data_repository, "2010CONTACTCARDS.csv"),                       header = TRUE, stringsAsFactors = FALSE)
+cc11  <- fread(paste0(data_repository, "2011CONTACTCARDS.csv"),                       header = TRUE, stringsAsFactors = FALSE)
+cc12  <- fread(paste0(data_repository, "2012CONTACTCARDS.csv"),                       header = TRUE, stringsAsFactors = FALSE)
+cc13  <- fread(paste0(data_repository, "2013CONTACTCARDS.csv"),                       header = TRUE, stringsAsFactors = FALSE)
+cc14  <- fread(paste0(data_repository, "ContactCardData2014.csv"),                    header = TRUE, stringsAsFactors = FALSE)
+cc15  <- fread(paste0(data_repository, "ContactCardData2015.csv"),                    header = TRUE, stringsAsFactors = FALSE)
 ISR   <- fread(paste0(data_repository, "2016-01 thru 2017-02 ISR -JUV Redacted.csv"), header = TRUE, stringsAsFactors = FALSE)
-
+dd    <- fread(paste0(data_repository, "District Demographics.csv"),                  header = TRUE, stringsAsFactors = FALSE, nrows = 25)

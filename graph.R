@@ -24,7 +24,7 @@
 #-------- set repository ----
 setwd(paste0(repository, '/output'))
 
-#---------------------------- Section 3: Generate Variables  -------------------
+#---------------------------- Section 2: Graph by Time  ------------------------
 
 #-------- graph overall narcotics by month -
 plot1 <- ggplot(data=narcotics_count_monthly, aes(x=Month, y=freq)) + 
@@ -100,9 +100,11 @@ dev.off()
 
 rm(plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10)
 
+#---------------------------- Section 2: Graph by Time and Location -----------
+
 #-------- contact cards by district and month -
 for (i in 1:31) {
-  plot <- ggplot(data=cc_count_monthly_dist[cc_count_monthly_dist$DISTRICT == i, ], aes(x=Month, y=freq)) + 
+  plot <- ggplot(data=cc_count_monthly_dist[cc_count_monthly_dist$District == i, ], aes(x=Month, y=freq)) + 
     geom_line() + geom_point() + scale_x_continuous(breaks = 2010:2017) + ylim(0, 8000) + 
       xlab("Month") + ylab(paste("Number of Contact Cards: District", i))
   
@@ -118,5 +120,28 @@ for (i in 1:31) {
   ggsave(paste0("na_district", i, ".pdf"), plot = plot)
 }
 
+#---------------------------- Section 2: Graph by Time and Race ---------------
+
+#-------- contact cards by district and race -
+plot <- ggplot(data=cc_count_monthly_race[cc_count_monthly_race$Black == FALSE, ], aes(x=Month, y=Sum)) + 
+  geom_line() + geom_point() + scale_x_continuous(breaks = 2010:2017) + ylim(0, 40000) + 
+  xlab("Month") + ylab("Number of Contact Cards: Non-Black Neighborhoods")
+ggsave(paste0("cc_", "non-black-neighborhoods", ".pdf"), plot = plot)
+
+plot <- ggplot(data=cc_count_monthly_race[cc_count_monthly_race$Black == TRUE, ], aes(x=Month, y=Sum)) + 
+  geom_line() + geom_point() + scale_x_continuous(breaks = 2010:2017) + ylim(0, 40000) + 
+  xlab("Month") + ylab("Number of Contact Cards: Black Neighborhoods")
+ggsave(paste0("cc_", "black-neighborhoods", ".pdf"), plot = plot)
+
+#-------- narcotics arrests by district and race -
+plot <- ggplot(data=narcotics_count_monthly_race[narcotics_count_monthly_race$Black == FALSE, ], aes(x=Month, y=Sum)) + 
+  geom_line() + geom_point() + scale_x_continuous(breaks = 2010:2017) + ylim(0, 3000) + 
+  xlab("Month") + ylab("Number of Narcotics Arrests: Non-Black Neighborhoods")
+ggsave(paste0("na_", "non-black-neighborhoods", ".pdf"), plot = plot)
+
+plot <- ggplot(data=narcotics_count_monthly_race[narcotics_count_monthly_race$Black == TRUE, ], aes(x=Month, y=Sum)) + 
+  geom_line() + geom_point() + scale_x_continuous(breaks = 2010:2017) + ylim(0, 3000) + 
+  xlab("Month") + ylab("Number of Narcotics Arrests: Black Neighborhoods")
+ggsave(paste0("na_", "black-neighborhoods", ".pdf"), plot = plot)
 
 

@@ -37,6 +37,28 @@ names(cc15) <- names(cc12)
 cc <- do.call("rbind", list(cc10, cc11, cc12, cc13, cc14, cc15))
 rm(cc10, cc11, cc12, cc13, cc14, cc15)
 
+temp1 <- count(cc, c("FOLASTNAME", "FOFIRSTNAME"))
+temp2 <- count(cc, c("SOLASTNAME", "SOFIRSTNAME"))
+names(temp1)[names(temp1) == "FOLASTNAME"]  <- "LASTNAME"
+names(temp1)[names(temp1) == "FOFIRSTNAME"] <- "FIRSTNAME"
+names(temp2)[names(temp2) == "SOLASTNAME"]  <- "LASTNAME"
+names(temp2)[names(temp2) == "SOFIRSTNAME"] <- "FIRSTNAME"
+
+temp3 <- rbind(temp1, temp2)
+temp3 <- filter(temp3, !(temp3$LASTNAME == ""))
+temp3 <- filter(temp3, !(temp3$FIRSTNAME == ""))
+temp4 <- ddply(temp3, .(LASTNAME, FIRSTNAME), colwise(sum))
+#temp4 <- aggregate(x = temp3, by = list(temp3$LASTNAME, temp3$FIRSTNAME), FUN = "sum")
+
+officers <- read.csv("C:/Users/reuben_bauer/Desktop/Thesis-5/Police Misconduct Analysis/Data/Officers.csv", header = TRUE)
+names(officers)[names(officers) == "officer_last"]  <- "LASTNAME"
+names(officers)[names(officers) == "officer_first"] <- "FIRSTNAME"
+officers <- select(officers, c(LASTNAME, FIRSTNAME, officer_id))
+officers <- merge(officers, temp4, by = c("LASTNAME", "FIRSTNAME"), all = TRUE)
+officers <- filter(officers, !is.na(officers$officer_id))
+officers[is.na(officers$freq), ]$freq <- 0
+write.csv(officers, file = "output/officer_stops.csv", row.names=FALSE)
+
 #-------- clean cc ----------
 cc$Month <- as.yearmon(cc$CONTACTDATE, "%d-%b-%y")
 cc <- select(cc, CONTACTTYPE, DISTRICT, Month)
@@ -48,7 +70,9 @@ names(ISR)[names(ISR) == "CONTACT_TYPE_CD"]<- "CONTACTTYPE"
 ISR$Month <- as.yearmon(ISR$CONTACTDATE, "%m/%d/%Y")
 ISR <- select(ISR, CONTACTTYPE, DISTRICT, Month)
 cc <- rbind(cc, ISR)
+names(cc)[names(cc) == "DISTRICT"]<-"District"
 cc <- filter(cc, cc$Month > 2010)
+cc <- filter(cc, cc$Month < 2017)
 
 rm(ISR)
 
@@ -62,7 +86,7 @@ cc_count_monthly$quarter   <- as.yearqtr(cc_count_monthly$Month, format = "%Y-%m
 cc_count_qrtly <- ddply(cc_count_monthly, .(Type, quarter), summarize, Sum=sum(freq))
 
 # gen cc count monthly by district
-cc_count_monthly_dist <- count(cc, c("Month", "DISTRICT"))
+cc_count_monthly_dist <- count(cc, c("Month", "District"))
 
 #---------------------------- Section 3: Clean Stops ---------------------------
 # ------- clean stops -------
@@ -78,6 +102,7 @@ names(stops)[names(stops) == "year_mon"]<-"Month"
 # gen stops count monthly -
 stops_monthly <- stops
 stops_monthly <- filter(stops_monthly, stops_monthly$Month > 2010)
+stops_monthly <- filter(stops_monthly, stops_monthly$Month < 2017)
 rm(stops)
 
 # gen stops count quarterly -
@@ -91,6 +116,7 @@ narcotics <- filter(crime, crime_type == "NARCOTICS")
 narcotics$Date <- as.Date(narcotics$Date, "%m/%d/%Y %H:%M:%S")
 narcotics$Month <- as.yearmon(narcotics$Date)
 narcotics <- filter(narcotics, narcotics$Month > 2010)
+narcotics <- filter(narcotics, narcotics$Month < 2017)
 
 #combine small drug categories
 narcotics$Description[narcotics$Description == "ATTEMPT POSSESSION CANNABIS" |
@@ -167,3 +193,30 @@ narc_sub_count_qrtly <- ddply(narc_sub_count_monthly, .(crime_type, Description,
 # gen narcotics count monthly district
 narcotics_count_monthly_dist <- count(narcotics, c("Month", "District"))
 
+#---------------------------- Section 4: Clean District Demographics -----------
+#-------- clean District Demographics -
+# convert string data to numeric
+dd <- as.data.frame(lapply(dd, function(y) as.numeric(gsub(",", "", y))))
+names(dd)
+
+# convert count to fraction
+dd_ops <- dd
+dd[, 3:8] <- dd_ops[, 3:8] / dd_ops[, 2]
+rm(dd_ops)
+
+# generate american american neighborhood indicator
+dd$Black <- dd$African.American > .468
+dd <- select(dd, District, Black)
+
+#-------- Merging Race, Crime, and Contact cards -
+#merge neighborhood race data with contact cards and crimes data
+narcotics_count_monthly_race <- merge(narcotics_count_monthly_dist, dd, by = "District")
+cc_count_monthly_race <- merge(cc_count_monthly_dist, dd, by = "District")
+rm(dd)
+
+#collapse on race
+narcotics_count_monthly_race <- select(narcotics_count_monthly_race, -District)
+narcotics_count_monthly_race <- ddply(narcotics_count_monthly_race, .(Month, Black), summarize, Sum=sum(freq))
+
+cc_count_monthly_race <- select(cc_count_monthly_race, -District)
+cc_count_monthly_race <- ddply(cc_count_monthly_race, .(Month, Black), summarize, Sum=sum(freq))
